@@ -1,8 +1,11 @@
+import java.io.FileReader;
+
 public class ES
 {
     String path_entrada; 
     String path_saida;
     String path_quantum;
+    String path_prioridades;
 
     ES(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
@@ -25,7 +28,7 @@ public class ES
     //Retorna o valor do quantum
     int CarregaQuantum()
     {
-        int quantum;
+        int quantum = 0;
 
         // INCOMPLETO //
 

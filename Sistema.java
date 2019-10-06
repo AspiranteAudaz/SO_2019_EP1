@@ -1,10 +1,10 @@
 public class Sistema
 {
-    static final char ES    = 'E';
-    static final char RX    = 'X';
-    static final char RY    = 'Y';
-    static final char COM   = 'C';
-    static final char SAIDA = 'S'; 
+    static final char ASMES    = 'E';
+    static final char ASMRX    = 'X';
+    static final char ASMRY    = 'Y';
+    static final char ASMCOM   = 'C';
+    static final char ASMSAIDA = 'S'; 
 
     //Registrador geral X
     int RX;
@@ -24,7 +24,7 @@ public class Sistema
 
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
-        es = new ES(String path_entrada, String path_saida, String path_quantum, String path_prioridades);
+        es = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -68,9 +68,10 @@ public class Sistema
         return es.CarregaProgramas();
     } 
 
-    int CarregaQuantum()
+    void CarregaQuantum()
     {
         this.quantum = es.CarregaQuantum();
+
     }
 
     ////////////////////////////////////////////////////////////////////
