@@ -11,7 +11,9 @@ public class BCP
     char estado     = PRONTO;
     int  prioridade = 0;
     int  creditos   = 0;
-
+    
+    int quantum_atual = 1;
+    
     String nomeProcesso;
     String memoria[];
 }
