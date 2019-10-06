@@ -35,9 +35,27 @@ public class ES
     //Retorna o valor do quantum
     int CarregaQuantum()
     {
-        int quantum = 0;
+        char[] buffer = CarregaArquivo(path_entrada + path_quantum);
 
-        return quantum;
+        if(buffer.length == 0)
+        {
+            //throw new Exception("Buffer nao foi carregado adequadamente.");
+        }
+
+        String num = "";
+
+        //Gera numero em formato string
+        for(int i = 0; i < buffer.length; i++)
+        {
+            //testa nova linha
+            if(buffer[i] == '\n')
+                continue;
+
+            num += buffer[i];
+        }
+
+        //parsa para inteiro
+        return Integer.parseInt(num);
     }
 
     public char[] CarregaArquivo(String path)
