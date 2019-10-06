@@ -81,13 +81,7 @@ public class Sistema
 
     ////////////////////////////////////////////////////////////////////
     // Logger
-        
-    //carrega programa
-    private boolean CarregaPrograma()
-    {
-        return false;
-    }   
-    
+            
     //grava texto na variavel String log
     private void EscreveLog(String text)
     {
@@ -109,6 +103,7 @@ public class Sistema
     //grava log ao interromper processo
     private void LogaInterrompido(String nome_proc, int num_instru)
     {
+        incrementaInstruc(num_instru);
         EscreveLog("Interrompendo " + nome_proc + " após " + num_instru + " instruções");
     }
 
