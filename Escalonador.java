@@ -2,12 +2,6 @@ import java.util.List;
 
 public class Escalonador
 {
-    static final char ES    = 'E';
-    static final char RX    = 'X';
-    static final char RY    = 'Y';
-    static final char COM   = 'C';
-    static final char SAIDA = 'S'; 
-
     //Referencia ao sistema
     Sistema sys;
 
@@ -30,5 +24,7 @@ public class Escalonador
         {
             listaProntos.add(i);
         }
+
+        //Pronto para escalonar
     }
 }

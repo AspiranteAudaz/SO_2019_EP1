@@ -1,5 +1,11 @@
 public class Sistema
 {
+    static final char ES    = 'E';
+    static final char RX    = 'X';
+    static final char RY    = 'Y';
+    static final char COM   = 'C';
+    static final char SAIDA = 'S'; 
+
     //Registrador geral X
     int RX;
     //Registrador geral Y
@@ -7,20 +13,25 @@ public class Sistema
     //Contador de programa
     int PC;
 
+    //Numero de instrucoes;
+    int quantum;
+
     //Log de saida
     String log; 
 
+    //Objeto de entrada e saida
     ES es;
 
-    Sistema(String path_entrada, String path_saida)
+    Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
-        es = new ES();
+        es = new ES(String path_entrada, String path_saida, String path_quantum, String path_prioridades);
     }
 
     /////////////////////////////////////////////////////////////////////
     // Execucao de programas
     int Executa(BCP processo)
     {
+        
         return 0;
     }
 
@@ -57,6 +68,11 @@ public class Sistema
         return es.CarregaProgramas();
     } 
 
+    int CarregaQuantum()
+    {
+        this.quantum = es.CarregaQuantum();
+    }
+
     ////////////////////////////////////////////////////////////////////
     // Logger
 
@@ -72,7 +88,7 @@ public class Sistema
 
     private void LogaProcesso(String nome_proc)
     {
-
+        
     }
 
     private void LogaInterrompido(String nome_proc, int num_instru)
