@@ -142,7 +142,6 @@ public class Sistema
                  + "MEDIA INSTRUCOES: " + (this.n_instruc/this.quantum) + "\n"
                  + "QUANTUM: " + this.quantum);
     }
-    
     private void GravaLog(){
         
     }
