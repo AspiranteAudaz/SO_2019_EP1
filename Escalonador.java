@@ -6,7 +6,7 @@ public class Escalonador
     Sistema sys;
 
     //Tabela de bcps
-    BCP tabelaBCP[];
+    BCP tabelaBCP[]; 
 
     //Cada valor aponta para uma linha na tabela BCP
     List<Integer> listaProntos;
@@ -24,7 +24,5 @@ public class Escalonador
         {
             listaProntos.add(i);
         }
-
-        //Pronto para escalonar
     }
 }

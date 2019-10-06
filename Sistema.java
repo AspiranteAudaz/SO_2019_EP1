@@ -29,10 +29,10 @@ public class Sistema
 
     /////////////////////////////////////////////////////////////////////
     // Execucao de programas
-    int Executa(BCP processo)
+    char Executa(BCP processo)
     {
         
-        return 0;
+        return ASMES;
     }
 
     private void AsmRX(int x)
