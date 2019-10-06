@@ -1,4 +1,11 @@
+import java.io.File;
 import java.io.FileReader;
+
+/*
+ * https://docs.oracle.com/javase/8/docs/api/java/io/FileReader.html
+ * https://docs.oracle.com/javase/8/docs/api/java/io/Reader.html#read-char:A-
+ * 
+ */
 
 public class ES
 {
@@ -30,8 +37,39 @@ public class ES
     {
         int quantum = 0;
 
-        // INCOMPLETO //
-
         return quantum;
+    }
+
+    public char[] CarregaArquivo(String path)
+    {
+        File       file   = null;
+        FileReader reader = null;
+
+        //Abre arquivo e cria leitor
+        try 
+        {
+            file   = new File(path);
+            reader = new FileReader(file);
+        } 
+        catch (Exception ex) 
+        {
+            //Tomamos GG, path errado ou arquivos não existem
+            System.out.print("ERRO ES, erro de localizacao de arquivo " + path + " :\n" + ex.toString() + "\n");
+        }
+
+        //Buffer de leitura
+        char buffer[] = new char[(int)file.length()];
+        
+        try
+        {
+            reader.read(buffer);
+        }
+        catch(Exception ex)
+        {
+            //So se estiverem de zuera
+            System.out.print("ERRO ES, falha ao ler arquivo " + path + " :\n" + ex.toString() + "\n");
+        }
+
+        return buffer;
     }
 }
