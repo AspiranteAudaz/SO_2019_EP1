@@ -81,19 +81,7 @@ public class Sistema
 
     ////////////////////////////////////////////////////////////////////
     // Logger
-    
-    //incrementa numero de trocas
-    //deve ser chamado toda vez que realizar uma troca
-    private void LogAddTroca(){
-        this.n_trocas++;
-    }
-    
-    //incrementa numero de instruções
-    //deve ser chamado toda vez que executar uma instrução
-    private void LogAddInstruc(){
-        this.n_instruc++;
-    }
-    
+        
     //carrega programa
     private boolean CarregaPrograma()
     {
@@ -109,6 +97,7 @@ public class Sistema
     //grava log ao carregar processo
     private void LogaCarregaProcesso(String nome_proc)
     {
+        incrementaProcessos();
         EscreveLog("Carregando " + nome_proc);   
     }
     
@@ -152,4 +141,17 @@ public class Sistema
     void incrementaProcessos(){
         this.n_processos++;
     }
+    
+    //incrementa numero de trocas
+    //deve ser chamado toda vez que realizar uma troca
+    private void incrementaTroca(){
+        this.n_trocas++;
+    }
+    
+    //incrementa numero de instruções
+    //deve ser chamado toda vez que executar uma instrução
+    private void incrementaInstruc(int i){
+        this.n_instruc = this.n_instruc + i;
+    }
+    
 }
