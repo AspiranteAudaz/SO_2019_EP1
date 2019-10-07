@@ -8,11 +8,10 @@ public class BCP
     int RY = 0;
     int PC = 0;
     
-    char estado     = PRONTO;
-    int  prioridade = 0;
-    int  creditos   = 0;
-    
-    int quantum_atual = 1;
+    char estado        = PRONTO;
+    int  prioridade    = 0;
+    int  creditos      = 0;
+    int  quantum_atual = 1;
     
     String nomeProcesso;
     String memoria[];

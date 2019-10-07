@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.LinkedList;
 import java.util.Arrays;
 
@@ -7,6 +8,7 @@ import java.util.Arrays;
  * https://docs.oracle.com/javase/8/docs/api/java/io/FileReader.html
  * https://docs.oracle.com/javase/8/docs/api/java/io/Reader.html#read-char:A-
  * https://docs.oracle.com/javase/8/docs/api/java/util/List.html
+ * https://docs.oracle.com/javase/7/docs/api/java/io/FileWriter.html
  */
 
 public class ES
@@ -61,6 +63,50 @@ public class ES
         return arrayBCP;
     }
 
+    //Retorna o valor do quantum
+    int CarregaQuantum()
+    {
+        char[] buffer = CarregaArquivo(path_entrada + "/" + path_quantum);
+
+        if(buffer.length == 0)
+        {
+            //throw new Exception("Buffer nao foi carregado adequadamente.");
+        }
+
+        String num = "";
+
+        //Gera numero em formato string
+        for(int i = 0; i < buffer.length; i++)
+        {
+            //testa nova linha
+            if(buffer[i] == '\n')
+                continue;
+
+            num += buffer[i];
+        }
+
+        //parsa para inteiro
+        return Integer.parseInt(num);
+    }
+
+    void EscreveLogDisco(String log, int quantum)
+    {
+        String str_quantum = "" + quantum;
+        if(str_quantum.length() == 1)
+            str_quantum = "0" + str_quantum;
+
+        try
+        {
+            FileWriter writter = new FileWriter(path_saida + "/log" + str_quantum + ".txt");
+            writter.write(log, 0, log.length());
+            writter.close();
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Erro critico na escrita do log file: " + ex.toString());
+        }
+    }
+
     private LinkedList<Integer> ParsaPrioridades()
     {
         //Parsa as linhas do arquivo carregado
@@ -68,7 +114,6 @@ public class ES
 
         //Lista de prioridades
         LinkedList<Integer> prioridades = new LinkedList<Integer>();
-
 
         int size = linhas.size();
 
@@ -81,10 +126,13 @@ public class ES
 
     private BCP ParsaPrograma(char[] buffer, int prioridade)
     {
+        //Parsa linhas do programa
         LinkedList<String> listaMemoria = ParsaLinhas(buffer);
+
         BCP bcp          = new BCP();
         bcp.prioridade   = prioridade;
         bcp.nomeProcesso = listaMemoria.poll();
+        bcp.creditos     = prioridade;
 
         //Aloca memoria para o programa
         String memoria[] = new String[listaMemoria.size()];
@@ -125,32 +173,6 @@ public class ES
         }
 
         return linhas;
-    }
-
-    //Retorna o valor do quantum
-    int CarregaQuantum()
-    {
-        char[] buffer = CarregaArquivo(path_entrada + "/" + path_quantum);
-
-        if(buffer.length == 0)
-        {
-            //throw new Exception("Buffer nao foi carregado adequadamente.");
-        }
-
-        String num = "";
-
-        //Gera numero em formato string
-        for(int i = 0; i < buffer.length; i++)
-        {
-            //testa nova linha
-            if(buffer[i] == '\n')
-                continue;
-
-            num += buffer[i];
-        }
-
-        //parsa para inteiro
-        return Integer.parseInt(num);
     }
 
     private File[] ListaArquivos(String path)
@@ -199,6 +221,7 @@ public class ES
         try
         {
             reader.read(buffer);
+            reader.close();
         }
         catch(Exception ex)
         {
