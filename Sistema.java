@@ -1,10 +1,17 @@
 public class Sistema
 {
-    static final char ASMES    = 'E';
-    static final char ASMRX    = 'X';
-    static final char ASMRY    = 'Y';
-    static final char ASMCOM   = 'C';
-    static final char ASMSAIDA = 'S'; 
+    //Retornos de execucao
+    static final char PREEMPCAO = 'P';
+    static final char BLOQUEADO = 'B';
+    static final char SAIDA     = 'S';
+    static final char ERROFATAL = 'E';
+    
+    //Instrucoes
+    static final String ASMX     = "X=";
+    static final String ASMY     = "Y=";
+    static final String ASMCOM   = "COM";
+    static final String ASMES    = "E/S";
+    static final String ASMSAIDA = "SAIDA";
 
     //Registrador geral X
     int RX;
@@ -22,7 +29,7 @@ public class Sistema
     //Log de saida
     String log; 
     int n_instruc = 0;
-    int n_trocas = 0;
+    int n_trocas  = 0;
 
     //Objeto de entrada e saida
     ES es;
@@ -36,28 +43,81 @@ public class Sistema
     // Execucao de programas
     char Executa(BCP processo)
     {
-        
-        return ASMES;
+        processo.estado = BCP.EXECUTANDO;
+
+        //O processo necessariamente troca
+        incrementaTroca();
+
+        for(int i = 0; i < processo.quantum_atual && i < quantum; i++)
+        {
+            //Incrementa toda vez que executa instrucao
+            incrementaInstruc(1);
+            
+            String asm = processo.memoria[processo.PC];
+
+            switch (asm) 
+            {
+                case ASMSAIDA:
+                    
+                    AsmSAIDA(processo);
+                    return SAIDA;
+                
+                case ASMES:
+
+                    AsmES(processo);
+                    return BLOQUEADO;
+
+                case ASMCOM:
+
+                    AsmCOM(processo);
+                    break;
+
+                default:
+
+                    if(asm.charAt(0) == ASMX.charAt(0) && asm.charAt(1) == ASMX.charAt(1))
+                    {
+                        AsmRX(Integer.parseInt(asm.substring(2, asm.length())));
+                    }
+                    else if(asm.charAt(0) == ASMY.charAt(0) && ASMY.charAt(1) == ASMY.charAt(1))
+                    {
+                        AsmRY(Integer.parseInt(asm.substring(2, asm.length())));
+                    }
+                    else
+                    {
+                        //erro de syntax, assembly errado
+                        return ERROFATAL;
+                    }
+                    break;
+            }
+        }
+
+        return PREEMPCAO;
     }
 
     private void AsmRX(int x)
     {
         RX = x;
+        PC++;
     }
 
     private void AsmRY(int y)
     {
         RY = y;
+        PC++;
     }
     
     private void AsmES(BCP processo)
     {
-
+        PC++;
+        processo.estado = BCP.BLOQUEADO;
+        processo.PC     = PC;
+        processo.RX     = RX;
+        processo.RY     = RY;
     }
 
     private void AsmCOM(BCP processo)
     {
-
+        PC++;
     }
 
     private void AsmSAIDA(BCP processo)
@@ -76,7 +136,6 @@ public class Sistema
     void CarregaQuantum()
     {
         this.quantum = es.CarregaQuantum();
-
     }
 
     ////////////////////////////////////////////////////////////////////
@@ -103,7 +162,6 @@ public class Sistema
     //grava log ao interromper processo
     private void LogaInterrompido(String nome_proc, int num_instru)
     {
-        incrementaInstruc(num_instru);
         EscreveLog("Interrompendo " + nome_proc + " após " + num_instru + " instruções");
     }
 
