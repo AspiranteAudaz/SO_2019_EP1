@@ -41,49 +41,76 @@ public class Sistema
 
     /////////////////////////////////////////////////////////////////////
     // Execucao de programas
+
+    private void CarregaRegistradores(BCP processo)
+    {
+        PC = processo.PC;
+        RX = processo.RX;
+        RY = processo.RY;
+    }
+
+    private void GuardaRegistradores(BCP processo, char estado)
+    {
+        processo.estado = estado;
+        processo.PC     = PC;
+        processo.RX     = RX;
+        processo.RY     = RY;
+    }
+
     char Executa(BCP processo)
     {
+        CarregaRegistradores(processo);
         processo.estado = BCP.EXECUTANDO;
+
+        LogaExecutaProcesso(processo.nomeProcesso);
 
         //O processo necessariamente troca
         incrementaTroca();
 
+        int num = 0;
         for(int i = 0; i < processo.quantum_atual && i < quantum; i++)
         {
+            num++;
             //Incrementa toda vez que executa instrucao
             incrementaInstruc(1);
             
             String asm = processo.memoria[processo.PC];
 
+            //DEBUG
+            //System.out.print("ASM: " + asm + " | ");
+
             switch (asm) 
             {
                 case ASMSAIDA:
-                    
+                    //System.out.print("EXEC: SAIDA");
                     AsmSAIDA(processo);
                     return SAIDA;
                 
                 case ASMES:
-
+                    //System.out.print("EXEC: ES");
                     AsmES(processo);
+                    LogaInterrompido(processo.nomeProcesso, num);
                     return BLOQUEADO;
 
                 case ASMCOM:
-
+                    //System.out.print("EXEC: COM");
                     AsmCOM(processo);
                     break;
 
                 default:
-
                     if(asm.charAt(0) == ASMX.charAt(0) && asm.charAt(1) == ASMX.charAt(1))
                     {
+                        //System.out.print("EXEC: RX");
                         AsmRX(Integer.parseInt(asm.substring(2, asm.length())));
                     }
                     else if(asm.charAt(0) == ASMY.charAt(0) && ASMY.charAt(1) == ASMY.charAt(1))
                     {
+                        //System.out.print("EXEC: RY");
                         AsmRY(Integer.parseInt(asm.substring(2, asm.length())));
                     }
                     else
                     {
+                        //System.out.print("EXEC: ERROR");
                         //erro de syntax, assembly errado
                         return ERROFATAL;
                     }
@@ -91,6 +118,8 @@ public class Sistema
             }
         }
 
+        GuardaRegistradores(processo, BCP.PRONTO);
+        LogaInterrompido(processo.nomeProcesso, num);
         return PREEMPCAO;
     }
 
@@ -109,10 +138,8 @@ public class Sistema
     private void AsmES(BCP processo)
     {
         PC++;
-        processo.estado = BCP.BLOQUEADO;
-        processo.PC     = PC;
-        processo.RX     = RX;
-        processo.RY     = RY;
+        LogaES(processo.nomeProcesso);
+        GuardaRegistradores(processo, BCP.BLOQUEADO);
     }
 
     private void AsmCOM(BCP processo)
@@ -122,7 +149,7 @@ public class Sistema
 
     private void AsmSAIDA(BCP processo)
     {
-
+        LogaTerminou(processo.nomeProcesso, RX, RY);
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -130,7 +157,12 @@ public class Sistema
 
     BCP[] CarregaProgramas()
     {
-        return es.CarregaProgramas();
+        BCP processos[] = es.CarregaProgramas();
+
+        for(int i = 0; i < processos.length; i++)
+            LogaCarregaProcesso(processos[i].nomeProcesso);
+
+        return processos;
     } 
 
     void CarregaQuantum()
@@ -179,13 +211,14 @@ public class Sistema
     
     //grava log de dados do numero de instruções e trocas
     //deve ser executado após todos processos terminarem
-    private void LogDados(){
-        EscreveLog("MEDIA DE TROCAS: " + (this.n_trocas/this.n_processos) +"\n"
-                 + "MEDIA INSTRUCOES: " + (this.n_instruc/this.quantum) + "\n"
+    void LogDados(){
+        EscreveLog("MEDIA DE TROCAS: " + ((float)this.n_trocas/(float)this.n_processos) +"\n"
+                 + "MEDIA INSTRUCOES: " + ((float)this.n_instruc/(float)this.quantum) + "\n"
                  + "QUANTUM: " + this.quantum);
     }
-    private void GravaLog(){
-        
+    
+    void GravaLog(){
+        es.EscreveLogDisco(log, quantum);
     }
     
     /////////////////////////////////////////////////////////////////////

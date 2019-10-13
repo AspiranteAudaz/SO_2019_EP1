@@ -161,7 +161,7 @@ public class ES
             {
                 if(linha.length() > 0)
                 {
-                    linhas.offer(linha);
+                    linhas.offer(linha.toUpperCase());
                     linha = "";
                 }
 
