@@ -129,10 +129,11 @@ public class ES
         //Parsa linhas do programa
         LinkedList<String> listaMemoria = ParsaLinhas(buffer);
 
-        BCP bcp          = new BCP();
-        bcp.prioridade   = prioridade;
-        bcp.nomeProcesso = listaMemoria.poll();
-        bcp.creditos     = prioridade;
+        BCP bcp            = new BCP();
+        bcp.prioridade     = prioridade;
+        bcp.nomeProcesso   = listaMemoria.poll();
+        bcp.creditos       = prioridade;
+        bcp.creditos_atual = prioridade;
 
         //Aloca memoria para o programa
         String memoria[] = new String[listaMemoria.size()];
