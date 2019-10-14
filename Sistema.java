@@ -16,25 +16,25 @@ public class Sistema
     static final String ASMSAIDA = "SAIDA";
 
     //Registrador geral X
-    int RX;
+    private int RX;
     //Registrador geral Y
-    int RY;
+    private int RY;
     //Contador de programa
-    int PC;
+    private int PC;
 
     //Numero de instrucoes;
-    int quantum;
+    private int quantum;
     
     //Numero de processos
-    int n_processos = 0;
+    private int n_processos = 0;
 
     //Log de saida
-    String log; 
-    int n_instruc = 0;
-    int n_trocas  = 0;
+    private String log; 
+    private int n_instruc = 0;
+    private int n_trocas  = 0;
 
     //Objeto de entrada e saida
-    ES es;
+    private ES es;
 
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
@@ -70,13 +70,13 @@ public class Sistema
         incrementaTroca();
 
         int num = 0;
-        for(int i = 0; i < processo.quantum_atual && i < quantum; i++)
+        for(int i = 0; i < processo.quantum_atual * quantum; i++)
         {
             num++;
             //Incrementa toda vez que executa instrucao
             incrementaInstruc(1);
             
-            String asm = processo.memoria[processo.PC];
+            String asm = processo.memoria[PC];
 
             //DEBUG
             //System.out.print("ASM: " + asm + " | ");

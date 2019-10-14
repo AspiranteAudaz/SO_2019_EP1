@@ -12,21 +12,68 @@ public class Escalonador
     //Cada valor aponta para uma linha na tabela BCP
     Vector<Integer> listaBloqueados = new Vector<Integer>();
 
+    //Lista de listas de processos prontos, por creditos
     Vector<Vector<Integer>> listasProntos;
+
+    //Numero de processos não terminados
+    int num_processos_ativos = 0;
+
+    int fila_atual = 0;
 
     Escalonador(Sistema sys)
     {
-        this.sys  = sys;
+        this.sys = sys;
 
         //Carrega os programas na memoria, ja preparando os bcps
-        tabelaBCP = OrdenaTabelaBCP(sys.CarregaProgramas());
+        tabelaBCP = OrdenaListaProcessos(sys.CarregaProgramas());
 
         //Gera as listas de creditos (prontos)
         listasProntos = GeraListas(tabelaBCP);
     }
 
+    void Escalona()
+    {
+        BCP processo_escalonado = EscalonaProcesso();
+        while(num_processos_ativos > 0)
+        {
+            char evento = sys.Executa(processo_escalonado);
+
+            switch (evento) 
+            {
+                case Sistema.SAIDA:
+                    num_processos_ativos--;
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+    }
+
+    private BCP EscalonaProcesso()
+    {
+        if(listasProntos.get(fila_atual).size() == 0)
+        {
+            if(fila_atual == listasProntos.size() - 1)
+            {
+                //RE-DISTRIBUI
+            }
+
+            fila_atual++;
+            return EscalonaProcesso();
+        }
+
+        OrdenaListaProcessos(listasProntos.get(fila_atual));
+
+        //n testei se e o maior
+        return tabelaBCP.get(listasProntos.get(fila_atual).remove(0));
+    }
+
+    //Gera as listas de processos prontos, por creditos
     private Vector<Vector<Integer>> GeraListas(Vector<BCP> tabelaBCP)
     {
+        num_processos_ativos = tabelaBCP.size();
+
         int maior_credito = 0;
 
         //Pega maior valor
@@ -49,7 +96,7 @@ public class Escalonador
         return listas_creditos;
     }
 
-    private Vector<BCP> OrdenaTabelaBCP(Vector<BCP> tabelaBCP)
+    private Vector<BCP> OrdenaListaProcessos(Vector<BCP> tabelaBCP)
     {
         String nomes[] = new String[2];
         int max        = 0;
