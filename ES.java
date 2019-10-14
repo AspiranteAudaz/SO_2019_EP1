@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.LinkedList;
+import java.util.Vector;
 import java.util.Arrays;
 
 /*
@@ -27,17 +27,17 @@ public class ES
     }
 
     //Retorna a tabela de BCP com os programas carregados
-    BCP[] CarregaProgramas()
+    Vector<BCP> CarregaProgramas()
     {
         //BCPs
-        LinkedList<BCP> listaBCP = new LinkedList<BCP>();
+        Vector<BCP> listaBCP = new Vector<BCP>();
 
         //Arquivos do diretorio
         File   file  = null;
         File[] files = ListaArquivos(path_entrada);
 
         //Lista de prioridades
-        LinkedList<Integer> prioridades = ParsaPrioridades();
+        Vector<Integer> prioridades = ParsaPrioridades();
 
         //Percorre os arquivos
         for(int i = 0; i < files.length; i++)
@@ -49,18 +49,10 @@ public class ES
                 continue;
             
             //Adiciona o bcp com a prioridade ja setada
-            listaBCP.add(ParsaPrograma(CarregaArquivo(file), prioridades.poll()));
+            listaBCP.add(ParsaPrograma(CarregaArquivo(file), (Integer)prioridades.remove(0)));
         }
 
-        //Aloca tabela BCP
-        BCP arrayBCP[] = new BCP[listaBCP.size()];
-        int size       = listaBCP.size();
-
-        //Passa para formato array
-        for(int i = 0; i < size; i++)
-            arrayBCP[i] = listaBCP.pop();
-
-        return arrayBCP;
+        return listaBCP;
     }
 
     //Retorna o valor do quantum
@@ -107,19 +99,19 @@ public class ES
         }
     }
 
-    private LinkedList<Integer> ParsaPrioridades()
+    private Vector<Integer> ParsaPrioridades()
     {
         //Parsa as linhas do arquivo carregado
-        LinkedList<String>  linhas      = ParsaLinhas(CarregaArquivo(path_entrada + "/" + path_prioridades));
+        Vector<String>  linhas      = ParsaLinhas(CarregaArquivo(path_entrada + "/" + path_prioridades));
 
         //Lista de prioridades
-        LinkedList<Integer> prioridades = new LinkedList<Integer>();
+        Vector<Integer> prioridades = new Vector<Integer>();
 
         int size = linhas.size();
 
         //Adiciona a nova lista parsando todos os inteiros
         for(int i = 0; i < size; i++)
-            prioridades.add(Integer.parseInt(linhas.pop()));  
+            prioridades.add(Integer.parseInt(linhas.remove(0)));  
 
         return prioridades;
     }
@@ -127,11 +119,11 @@ public class ES
     private BCP ParsaPrograma(char[] buffer, int prioridade)
     {
         //Parsa linhas do programa
-        LinkedList<String> listaMemoria = ParsaLinhas(buffer);
+        Vector<String> listaMemoria = ParsaLinhas(buffer);
 
         BCP bcp            = new BCP();
         bcp.prioridade     = prioridade;
-        bcp.nomeProcesso   = listaMemoria.poll();
+        bcp.nomeProcesso   = listaMemoria.remove(0);
         bcp.creditos       = prioridade;
         bcp.creditos_atual = prioridade;
 
@@ -141,16 +133,16 @@ public class ES
 
         //Passa para formato array
         for(int i = 0; i < size; i++)
-            memoria[i] = listaMemoria.pop();
+            memoria[i] = listaMemoria.remove(0);
 
         bcp.memoria = memoria;
 
         return bcp;
     }
 
-    private LinkedList<String> ParsaLinhas(char[] buffer)
+    private Vector<String> ParsaLinhas(char[] buffer)
     {
-        LinkedList<String> linhas = new LinkedList<String>();
+        Vector<String> linhas = new Vector<String>();
         
         //Uma linha
         String linha = "";
@@ -162,7 +154,7 @@ public class ES
             {
                 if(linha.length() > 0)
                 {
-                    linhas.offer(linha.toUpperCase());
+                    linhas.addElement(linha.toUpperCase());
                     linha = "";
                 }
 

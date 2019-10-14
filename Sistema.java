@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class Sistema
 {
     //Retornos de execucao
@@ -155,12 +157,12 @@ public class Sistema
     /////////////////////////////////////////////////////////////////////
     // Leitura de programas
 
-    BCP[] CarregaProgramas()
+    Vector<BCP> CarregaProgramas()
     {
-        BCP processos[] = es.CarregaProgramas();
+        Vector<BCP> processos = es.CarregaProgramas();
 
-        for(int i = 0; i < processos.length; i++)
-            LogaCarregaProcesso(processos[i].nomeProcesso);
+        for(int i = 0; i < processos.size(); i++)
+            LogaCarregaProcesso(processos.get(i).nomeProcesso);
 
         return processos;
     } 
