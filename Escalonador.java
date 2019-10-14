@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.Vector;
 import java.util.Arrays;
 
 public class Escalonador
@@ -10,8 +10,9 @@ public class Escalonador
     BCP tabelaBCP[]; 
 
     //Cada valor aponta para uma linha na tabela BCP
-    LinkedList<Integer> listaProntos    = new LinkedList<Integer>();
-    LinkedList<Integer> listaBloqueados = new LinkedList<Integer>();
+    Vector<Integer> listaBloqueados = new Vector<Integer>();
+
+    Vector<Vector<Integer>> listasProntos;
 
     Escalonador(Sistema sys)
     {
@@ -20,14 +21,33 @@ public class Escalonador
         //Carrega os programas na memoria, ja preparando os bcps
         tabelaBCP = OrdenaTabelaBCP(sys.CarregaProgramas());
 
-        //Adiciona todos os processos na lista de prontos
+        listasProntos = GeraListas(tabelaBCP);
+    }
+
+    private Vector<Vector<Integer>> GeraListas(BCP tabelaBCP[])
+    {
+        int maior_credito = 0;
+
+        //Pega maior valor
         for(int i = 0; i < tabelaBCP.length; i++)
         {
-            //DEBUG - Ordenacao dos bcps por prioridade e nomes em caso de empate
-            //System.out.println(tabelaBCP[i].nomeProcesso + " | " + tabelaBCP[i].prioridade);
-
-            listaProntos.add(i);
+            if(tabelaBCP[i].creditos > maior_credito)
+                maior_credito = tabelaBCP[i].creditos;
         }
+
+        Vector<Vector<Integer>> listas_creditos = new Vector<Vector<Integer>>();
+
+        //Cria listas
+        for(int i = 0; i < listas_creditos.size(); i++)
+            listas_creditos.add(new Vector<Integer>());
+
+        //Adiciona uma referencia para o processo na tabela BCP na sua respectiva fila
+        for(int i = 0; i < tabelaBCP.length; i++)
+        {
+            listas_creditos.get(i).add(tabelaBCP[i].creditos);
+        }
+
+        return listas_creditos;
     }
 
     private BCP[] OrdenaTabelaBCP(BCP tabelaBCP[])
