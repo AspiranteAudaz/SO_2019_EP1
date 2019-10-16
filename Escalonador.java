@@ -9,11 +9,10 @@ public class Escalonador
     //Tabela de bcps
     Vector<BCP> tabelaBCP;
 
-    //Cada valor aponta para uma linha na tabela BCP
-    Vector<Integer> listaBloqueados = new Vector<Integer>();
+    Vector<BCP> listaBloqueados = new Vector<BCP>();
 
     //Lista de listas de processos prontos, por creditos
-    Vector<Vector<Integer>> listasProntos;
+    Vector<Vector<BCP>> listasProntos;
 
     //Numero de processos não terminados
     int num_processos_ativos = 0;
@@ -29,6 +28,14 @@ public class Escalonador
 
         //Gera as listas de creditos (prontos)
         listasProntos = GeraListas(tabelaBCP);
+
+        //DEBUG
+        System.out.println("Lista de listas de processos, inicialmente: ");
+        for(int i = 0; i < listasProntos.size(); i++)
+        {
+            for(int j = 0; j < listasProntos.get(i).size(); j++)
+                System.out.println("lista: " + i + " prioridade: " + listasProntos.get(i).get(j).prioridade);
+        }
     }
 
     void Escalona()
@@ -54,23 +61,35 @@ public class Escalonador
     {
         if(listasProntos.get(fila_atual).size() == 0)
         {
-            if(fila_atual == listasProntos.size() - 1)
+            if(fila_atual == 0)
             {
-                //RE-DISTRIBUI
+                RedistribuiProcessosFilas(listasProntos);
             }
 
-            fila_atual++;
+            fila_atual--;
             return EscalonaProcesso();
         }
 
         OrdenaListaProcessos(listasProntos.get(fila_atual));
 
         //n testei se e o maior
-        return tabelaBCP.get(listasProntos.get(fila_atual).remove(0));
+        return listasProntos.get(fila_atual).remove(0);
+    }
+
+    private void RedistribuiProcessosFilas(Vector<Vector<BCP>> listas_creditos)
+    {
+        fila_atual = listas_creditos.size();
+
+        //Adiciona uma referencia para o processo na tabela BCP na sua respectiva fila
+        for(int i = 0; i < tabelaBCP.size(); i++)
+        {
+            listas_creditos.get(tabelaBCP.get(i).creditos).add(tabelaBCP.get(i));
+            tabelaBCP.get(i).creditos_atual = tabelaBCP.get(i).creditos;
+        }
     }
 
     //Gera as listas de processos prontos, por creditos
-    private Vector<Vector<Integer>> GeraListas(Vector<BCP> tabelaBCP)
+    private Vector<Vector<BCP>> GeraListas(Vector<BCP> tabelaBCP)
     {
         num_processos_ativos = tabelaBCP.size();
 
@@ -83,15 +102,13 @@ public class Escalonador
                 maior_credito = tabelaBCP.get(i).creditos;
         }
 
-        Vector<Vector<Integer>> listas_creditos = new Vector<Vector<Integer>>();
+        Vector<Vector<BCP>> listas_creditos = new Vector<Vector<BCP>>();
 
         //Cria listas
         for(int i = 0; i < maior_credito + 1; i++)
-            listas_creditos.add(new Vector<Integer>());
+            listas_creditos.add(new Vector<BCP>());
 
-        //Adiciona uma referencia para o processo na tabela BCP na sua respectiva fila
-        for(int i = 0; i < tabelaBCP.size(); i++)
-            listas_creditos.get(tabelaBCP.get(i).creditos).add(i);
+        RedistribuiProcessosFilas(listas_creditos);
 
         return listas_creditos;
     }
