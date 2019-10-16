@@ -29,7 +29,7 @@ public class Sistema
     private int n_processos = 0;
 
     //Log de saida
-    private String log; 
+    private String log    = "";
     private int n_instruc = 0;
     private int n_trocas  = 0;
 
@@ -39,6 +39,8 @@ public class Sistema
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
         es = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
+
+        CarregaQuantum();
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -174,6 +176,11 @@ public class Sistema
 
     ////////////////////////////////////////////////////////////////////
     // Logger
+
+    void GravaLog(){
+        LogDados();
+        es.EscreveLogDisco(log, quantum);
+    }
             
     //grava texto na variavel String log
     private void EscreveLog(String text)
@@ -213,20 +220,16 @@ public class Sistema
     
     //grava log de dados do numero de instruções e trocas
     //deve ser executado após todos processos terminarem
-    void LogDados(){
+    private void LogDados(){
         EscreveLog("MEDIA DE TROCAS: " + ((float)this.n_trocas/(float)this.n_processos) +"\n"
                  + "MEDIA INSTRUCOES: " + ((float)this.n_instruc/(float)this.quantum) + "\n"
                  + "QUANTUM: " + this.quantum);
     }
     
-    void GravaLog(){
-        es.EscreveLogDisco(log, quantum);
-    }
-    
     /////////////////////////////////////////////////////////////////////
     //Outros
     //deve ser chamado toda vez que carregar um processo
-    void incrementaProcessos(){
+    private void incrementaProcessos(){
         this.n_processos++;
     }
     

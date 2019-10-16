@@ -70,8 +70,8 @@ public class ES
         //Gera numero em formato string
         for(int i = 0; i < buffer.length; i++)
         {
-            //testa nova linha
-            if(buffer[i] == '\n')
+            //testa chars indesejaveis
+            if(buffer[i] == '\n' || buffer[i] == '\f' || buffer[i] == '\r')
                 continue;
 
             num += buffer[i];
