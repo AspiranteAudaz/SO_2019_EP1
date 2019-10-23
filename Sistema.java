@@ -21,6 +21,8 @@ public class Sistema
     private int RY;
     //Contador de programa
     private int PC;
+    //Memoria principal
+    private String Memoria[];
 
     //Numero de instrucoes;
     private int quantum;
@@ -38,7 +40,15 @@ public class Sistema
 
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
-        es = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
+        es      = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
+        Memoria = null;
+        CarregaQuantum();
+    }
+
+    Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades, int tamanho_memoria)
+    {
+        es      = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
+        Memoria = new String[tamanho_memoria];
 
         CarregaQuantum();
     }
@@ -78,7 +88,7 @@ public class Sistema
             //Incrementa toda vez que executa instrucao
             incrementaInstruc(1);
             
-            String asm = processo.memoria[PC];
+            String asm = Memoria[PC];
 
             //DEBUG
             //System.out.print("ASM: " + asm + " | ");
@@ -159,12 +169,46 @@ public class Sistema
     /////////////////////////////////////////////////////////////////////
     // Leitura de programas
 
-    Vector<BCP> CarregaProgramas()
+    Vector<BCP> CarregaProgramas() throws Exception
     {
-        Vector<BCP> processos = es.CarregaProgramas();
+        Vector<BCP> processos  = es.CarregaProgramas();
+        int memoria_necessaria = 0;
 
+        BCP p;
         for(int i = 0; i < processos.size(); i++)
-            LogaCarregaProcesso(processos.get(i).nomeProcesso);
+        {
+            p                   = processos.get(i);
+            memoria_necessaria += p.memoria.length;
+            LogaCarregaProcesso(p.nomeProcesso);    
+        }
+
+        if(Memoria == null)
+            Memoria = new String[memoria_necessaria];
+        else if(memoria_necessaria == Memoria.length)
+            throw new Exception("Impossivel carregar os programas na memoria - Memoria principal: " + Memoria.length + "L - Processos: " + memoria_necessaria);
+
+        //Posicao na memoria principal
+        int ptr = 0;
+        String memoria[];
+        for(int i = 0; i < processos.size(); i++)
+        {
+            p       = processos.get(i);  
+            memoria = p.memoria;
+            p.PC = ptr;
+            
+            for(int k = 0; k < memoria.length; k++)
+            {
+                Memoria[ptr] = memoria[k];
+                ptr++;
+            }
+
+            p.memoria = null;
+        }
+
+        for(int i = 0; i < Memoria.length; i++)
+        {
+            System.out.println(Memoria[i]);
+        }
 
         return processos;
     } 

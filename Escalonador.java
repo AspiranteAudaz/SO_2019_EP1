@@ -29,7 +29,7 @@ public class Escalonador
 
     int fila_atual = 0;
 
-    Escalonador(Sistema sys)
+    Escalonador(Sistema sys) throws Exception
     {
         if(_debug)
             scanner = new Scanner(System.in);
