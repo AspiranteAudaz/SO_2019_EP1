@@ -43,11 +43,16 @@ public class Escalonador
         listasProntos = GeraListas(tabelaBCP);
 
         //DEBUG
+        Vector<BCP> p;
         System.out.println("Lista de listas de processos, inicialmente: ");
-        for(int i = 0; i < listasProntos.size(); i++)
+        int size = listasProntos.size();
+        int size_p;
+        for(int i = 0; i < size; i++)
         {
-            for(int j = 0; j < listasProntos.get(i).size(); j++)
-                System.out.println("lista: " + i + " prioridade: " + listasProntos.get(i).get(j).prioridade);
+            p = listasProntos.get(i);
+            size_p = p.size();
+            for(int j = 0; j < size_p; j++)
+                System.out.println("lista: " + i + " prioridade: " + p.get(j).prioridade);
         }
     }
 
@@ -143,6 +148,7 @@ public class Escalonador
             p.tempo_espera -= 1;
             if(p.tempo_espera == 0)
             {
+                //DEBUG
                 System.out.println("| N: " + p.nomeProcesso + " | C: " + p.creditos_atual + " | PC: " + p.PC + " | F: " + p.fresco + " | Q: " + quantas_passados + " | DESBLOQUEADO!");
                 DesloqueiaProcesso(p);
                 k--;
@@ -194,9 +200,9 @@ public class Escalonador
             StackTrace("fila_atual com valor negativo");
 
         BCP p;
-
+        int tbcp_size = tabelaBCP.size();
         //Adiciona uma referencia para o processo na tabela BCP na sua respectiva fila
-        for(int i = 0; i < tabelaBCP.size(); i++)
+        for(int i = 0; i < tbcp_size; i++)
         {
             p = tabelaBCP.get(i);
             listas_creditos.get(p.creditos).add(p);
@@ -245,12 +251,14 @@ public class Escalonador
         num_processos_ativos = tabelaBCP.size();
 
         int maior_credito = 0;
-
+        BCP p;
+        int tbcp_size = tabelaBCP.size();
         //Pega maior valor
-        for(int i = 0; i < tabelaBCP.size(); i++)
+        for(int i = 0; i < tbcp_size; i++)
         {
-            if(tabelaBCP.get(i).creditos > maior_credito)
-                maior_credito = tabelaBCP.get(i).creditos;
+            p = tabelaBCP.get(i);
+            if(p.creditos > maior_credito)
+                maior_credito = p.creditos;
         }
 
         Vector<Vector<BCP>> listas_creditos = new Vector<Vector<BCP>>();
@@ -267,38 +275,43 @@ public class Escalonador
     private Vector<BCP> OrdenaListaProcessos(Vector<BCP> tabelaBCP)
     {
         String nomes[] = new String[2];
-
-        for(int i = 0; i < tabelaBCP.size(); i++)
+        int tbcp_size = tabelaBCP.size();
+        for(int i = 0; i < tbcp_size; i++)
         {
             BCP temp;
-            for(int j = 0; j < tabelaBCP.size() - i - 1; j++)
+            BCP a;
+            BCP b;
+            for(int j = 0; j < tbcp_size - i - 1; j++)
             {
-                if(tabelaBCP.get(j).prioridade > tabelaBCP.get(j + 1).prioridade)
+                a = tabelaBCP.get(j);
+                b = tabelaBCP.get(j+1);
+
+                if(a.prioridade > b.prioridade)
                 {
-                    temp = tabelaBCP.get(j);
-                    tabelaBCP.setElementAt(tabelaBCP.get(j+1), j);
+                    temp = a;
+                    tabelaBCP.setElementAt(b, j);
                     tabelaBCP.setElementAt(temp, j+1);
                 }
-                else if(tabelaBCP.get(j).prioridade == tabelaBCP.get(j+1).prioridade)
+                else if(a.prioridade == b.prioridade)
                 {
                     //Regra adversidades
                     if(tabelaBCP.get(j).estado == BCP.BLOQUEADO)
                     {
-                        temp = tabelaBCP.get(j);
-                        tabelaBCP.setElementAt(tabelaBCP.get(j+1), j);
+                        temp = a;
+                        tabelaBCP.setElementAt(b, j);
                         tabelaBCP.setElementAt(temp, j+1);
                         continue;
                     }
 
                     //Se empatar 
-                    nomes[0] = tabelaBCP.get(j).nomeProcesso;
-                    nomes[1] = tabelaBCP.get(j+1).nomeProcesso;
+                    nomes[0] = a.nomeProcesso;
+                    nomes[1] = b.nomeProcesso;
                     Arrays.sort(nomes);
 
-                    if(tabelaBCP.get(j).nomeProcesso.equals(nomes[0]))
+                    if(a.nomeProcesso.equals(nomes[0]))
                     {
-                        temp = tabelaBCP.get(j);
-                        tabelaBCP.setElementAt(tabelaBCP.get(j+1), j);
+                        temp = a;
+                        tabelaBCP.setElementAt(b, j);
                         tabelaBCP.setElementAt(temp, j+1);
                     }
                 }
