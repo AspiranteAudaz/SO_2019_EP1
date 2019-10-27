@@ -135,32 +135,38 @@ public class Escalonador
     {
         if(fila_atual == 0)
         {
-            //if(listaBloqueados.size() == 0)
-            //{
+            if(listaBloqueados.size() == 0)
+            {
+                System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | REDISTRIBUI! ");
                 RedistribuiProcessosFilas(listasProntos);
                 System.out.println("Processos redistribuidos!");
                 pos_rrobin = 0;
                 rrobin     = false;
                 return EscalonaProcesso();
-                /*
             }
             else
             {
+                if(listasProntos.get(fila_atual).size() == 0)
+                    return null;
+
+                //DEBUG
+                System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | ROUND ROBIN!");
                 rrobin = true;
+
                 return EscalonaRoundRobin();
             }
-                */
         }
 
+        
         if(listasProntos.get(fila_atual).size() == 0)
         {
             fila_atual--;
-
+            System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | FILA VAZIA NORMAL!");
             return EscalonaProcesso();
         }
 
         OrdenaListaProcessos(listasProntos.get(fila_atual));
-
+        System.out.println("FA: " + fila_atual + " | NPFA: "+ listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | RETIRA NORMAL ");
         //n testei se e o maior
         return listasProntos.get(fila_atual).remove(listasProntos.get(fila_atual).size() - 1);
     }
@@ -224,10 +230,23 @@ public class Escalonador
 
     private void RedistribuiProcessosFilas(Vector<Vector<BCP>> listas_creditos)
     {
-        fila_atual = listas_creditos.size() - 1;
-
         if(fila_atual < 0)
             StackTrace("fila_atual com valor negativo");
+
+        if(listasProntos != null)
+        {
+            fila_atual = 0;
+            Vector<BCP> fila_zero = listasProntos.get(fila_atual);
+
+            int fila_zero_size = fila_zero.size();
+            for(int i = 0; i < fila_zero_size; i++)
+            {
+                fila_zero.remove(0);
+            }
+            System.out.println("******************************************\n FA: "+ fila_atual + " FLEN: " + listasProntos.get(fila_atual).size());
+        }   
+           
+        fila_atual = listas_creditos.size() - 1;   
 
         BCP p;
         int tbcp_size = tabelaBCP.size();

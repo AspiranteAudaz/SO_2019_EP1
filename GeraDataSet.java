@@ -5,7 +5,7 @@
 
 public class GeraDataSet
 {
-    public static void main(String[] args) 
+    public static void main(String[] args) throws Exception
     {    
         int numero_testes = 30;
 
@@ -21,7 +21,8 @@ public class GeraDataSet
             }
             catch(Exception ex)
             {
-                ex.printStackTrace();
+                System.out.println("LMAO");
+                throw ex;
             }
         }
     }

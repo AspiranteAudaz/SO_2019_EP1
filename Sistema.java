@@ -46,7 +46,6 @@ public class Sistema
     private ES es;
 
 
-
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
         es      = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
@@ -301,11 +300,13 @@ public class Sistema
     {
         es.EscreveLogDisco(metricaA, "metricaA", true);
         es.EscreveLogDisco(metricaB, "metricaB", true);
+        es.EscreveLogDisco(metricaC, "metricaC", true);
     }
 
     void GravaLog(){
-        EscreveMetricaA( (((float)this.n_trocas/(float)this.n_processos)+"").replace(".", ","));
-        EscreveMetricaB( (((float)this.n_instruc/(float)this.n_trocas)+"").replace(".", ","));
+        EscreveMetricaA((((float)this.n_trocas/(float)this.n_processos)+"").replace(".", ","));
+        EscreveMetricaB((((float)this.n_instruc/(float)this.n_trocas)+"").replace(".", ","));
+        EscreveMetricaC(quantum + "");
         GraveMetrica();
         LogDados();
         String str_quantum = "" + quantum;
