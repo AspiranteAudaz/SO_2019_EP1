@@ -2,8 +2,13 @@ import java.util.Vector;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**Classe agnóstica a CPU, e é responsavel pelo escalonamento de processos.
+* @author Lucas Moura de Carvalho, Kevin Gabriel Gonçalves Oliveira, Willy Lee
+* @version 1.00
+*/
 public class Escalonador
 {
+
     final int TEMPO_ESPERA = 2;
 
     //Para debug
@@ -120,7 +125,6 @@ public class Escalonador
 
     private BCP EscalonaRoundRobin()
     {
-     
         Vector<BCP> fila = listasProntos.get(fila_atual);
         BCP p = fila.get(pos_rrobin % fila.size());
         pos_rrobin++;
@@ -131,19 +135,21 @@ public class Escalonador
     {
         if(fila_atual == 0)
         {
-            if(listaBloqueados.size() == 0)
-            {
+            //if(listaBloqueados.size() == 0)
+            //{
                 RedistribuiProcessosFilas(listasProntos);
                 System.out.println("Processos redistribuidos!");
                 pos_rrobin = 0;
                 rrobin     = false;
                 return EscalonaProcesso();
+                /*
             }
             else
             {
                 rrobin = true;
                 return EscalonaRoundRobin();
             }
+                */
         }
 
         if(listasProntos.get(fila_atual).size() == 0)

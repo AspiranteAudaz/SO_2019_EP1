@@ -11,6 +11,10 @@ import java.util.Arrays;
  * https://docs.oracle.com/javase/7/docs/api/java/io/FileWriter.html
  */
 
+/**Classe auxiliar para a execução de E/S(não relacionada ao escolonador), como leitura de programas e escrita de resultados.
+* @author Lucas Moura de Carvalho, Kevin Gabriel Gonçalves Oliveira, Willy Lee
+* @version 1.00
+*/
 public class ES
 {
     String path_entrada; 
@@ -71,7 +75,7 @@ public class ES
         for(int i = 0; i < buffer.length; i++)
         {
             //testa chars indesejaveis
-            if(buffer[i] == '\n' || buffer[i] == '\f' || buffer[i] == '\r')
+            if(buffer[i] == '\n' || buffer[i] == '\f' || buffer[i] == '\r' || buffer[i] == ' ')
                 continue;
 
             num += buffer[i];
@@ -81,15 +85,25 @@ public class ES
         return Integer.parseInt(num);
     }
 
-    void EscreveLogDisco(String log, int quantum)
+    void EscreveLogDisco(String log, String nome)
     {
-        String str_quantum = "" + quantum;
-        if(str_quantum.length() == 1)
-            str_quantum = "0" + str_quantum;
-
         try
         {
-            FileWriter writter = new FileWriter(path_saida + "/log" + str_quantum + ".txt");
+            FileWriter writter = new FileWriter(path_saida + "/" + nome + ".txt");
+            writter.write(log, 0, log.length());
+            writter.close();
+        }
+        catch(Exception ex)
+        {
+            System.out.println("Erro critico na escrita do log file: " + ex.toString());
+        }
+    }
+
+    void EscreveLogDisco(String log, String nome, boolean concatena)
+    {
+        try
+        {
+            FileWriter writter = new FileWriter(path_saida + "/" + nome + ".txt", concatena);
             writter.write(log, 0, log.length());
             writter.close();
         }
@@ -142,13 +156,17 @@ public class ES
 
     private Vector<String> ParsaLinhas(char[] buffer)
     {
+
         Vector<String> linhas = new Vector<String>();
         
         //Uma linha
         String linha = "";
+        char last_char = 0;
 
         for(int i = 0; i < buffer.length; i++)
         {
+            last_char = buffer[i];
+
             //Testa se e nova linha, carriage return ou line feed
             if(buffer[i] == '\n' || buffer[i] == '\f' || buffer[i] == '\r')
             {
@@ -164,6 +182,9 @@ public class ES
             //Concatena valor
             linha += buffer[i];
         }
+
+        if(last_char != '\n' || last_char != '\f' || last_char != '\r')
+            linhas.addElement(linha.toUpperCase());
 
         return linhas;
     }

@@ -1,3 +1,8 @@
+/**Classe dataholder representando o BCP.
+* @author Lucas Moura de Carvalho, Kevin Gabriel Gonçalves Oliveira, Willy Lee
+* @version 1.00
+*/
+
 public class BCP
 {
     static final char EXECUTANDO = 'E';

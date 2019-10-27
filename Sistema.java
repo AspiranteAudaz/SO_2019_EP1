@@ -1,5 +1,10 @@
 import java.util.Vector;
 
+/**Classe representando o sistema vulgo CPU.
+* @author Lucas Moura de Carvalho, Kevin Gabriel Gonçalves Oliveira, Willy Lee
+* @version 1.00
+*/
+
 public class Sistema
 {
     //Retornos de execucao
@@ -23,6 +28,8 @@ public class Sistema
     private int PC;
     //Memoria principal
     private String Memoria[];
+    //Tamnho de cada programa se especificado
+    private int tamanho_programa;
 
     //Numero de instrucoes;
     private int quantum;
@@ -38,19 +45,32 @@ public class Sistema
     //Objeto de entrada e saida
     private ES es;
 
+
+
     Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades)
     {
         es      = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
         Memoria = null;
-        CarregaQuantum();
+        tamanho_programa = 0;
+        CarregaQuantum(0);
     }
 
-    Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades, int tamanho_memoria)
+    Sistema(String path_entrada, String path_saida, String path_quantum, String path_prioridades, int tamanho, boolean tamanho_memoria, int forca_quantum)
     {
-        es      = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
-        Memoria = new String[tamanho_memoria];
+        es = new ES(path_entrada, path_saida, path_quantum, path_prioridades);
+        
+        if(tamanho_memoria)
+        {
+            Memoria = new String[tamanho];
+            tamanho_programa = 0;
+        }
+        else
+        {
+            Memoria = null;
+            tamanho_programa = tamanho;
+        }
 
-        CarregaQuantum();
+        CarregaQuantum(forca_quantum);
     }
 
     /////////////////////////////////////////////////////////////////////
@@ -97,6 +117,7 @@ public class Sistema
             {
                 case ASMSAIDA:
                     //System.out.print("EXEC: SAIDA");
+                    LogaInterrompido(processo.nomeProcesso, num);
                     AsmSAIDA(processo);
                     return SAIDA;
                 
@@ -173,23 +194,44 @@ public class Sistema
     {
         Vector<BCP> processos  = es.CarregaProgramas();
         int memoria_necessaria = 0;
-
         BCP p;
-        for(int i = 0; i < processos.size(); i++)
+
+        if(tamanho_programa == 0)
         {
-            p                   = processos.get(i);
-            memoria_necessaria += p.memoria.length;
-            LogaCarregaProcesso(p.nomeProcesso);    
+            //Caso nao se tenha definido o tamanho do programa,
+            //somam-se todos os tamanhos dos programas
+            for(int i = 0; i < processos.size(); i++)
+            {
+                p                   = processos.get(i);
+                memoria_necessaria += p.memoria.length;
+                LogaCarregaProcesso(p.nomeProcesso);    
+            }    
         }
+        else
+        {
+            for(int i = 0; i < processos.size(); i++)
+            {
+                p                   = processos.get(i);
+                LogaCarregaProcesso(p.nomeProcesso);    
+            }
+
+            //Caso tenha especificado um tamanho maximo de programa
+            memoria_necessaria = processos.size() * tamanho_programa;
+        }
+        
 
         if(Memoria == null)
             Memoria = new String[memoria_necessaria];
-        else if(memoria_necessaria == Memoria.length)
+        else if(memoria_necessaria > Memoria.length)
             throw new Exception("Impossivel carregar os programas na memoria - Memoria principal: " + Memoria.length + "L - Processos: " + memoria_necessaria);
 
         //Posicao na memoria principal
         int ptr = 0;
         String memoria[];
+
+        int program_len = 0;
+
+        //Passa programas carregados para memoria
         for(int i = 0; i < processos.size(); i++)
         {
             p           = processos.get(i);  
@@ -197,34 +239,79 @@ public class Sistema
             p.PC        = ptr;
             p.PTR_TEXTO = PC;
             
-            for(int k = 0; k < memoria.length; k++)
+            if(tamanho_programa == 0)
+                program_len = memoria.length;
+            else
+                program_len = tamanho_programa;
+
+            for(int k = 0; k < program_len; k++)
             {
-                Memoria[ptr] = memoria[k];
+                if(k < memoria.length)
+                    Memoria[ptr] = memoria[k];
+                else 
+                    Memoria[ptr] = null;
+                    
                 ptr++;
             }
 
             p.memoria = null;
         }
 
+        /*
         for(int i = 0; i < Memoria.length; i++)
         {
             System.out.println(Memoria[i]);
         }
+        */
 
         return processos;
     } 
 
-    void CarregaQuantum()
+    void CarregaQuantum(int forca_quantum)
     {
-        this.quantum = es.CarregaQuantum();
+        if(forca_quantum == 0)
+            this.quantum = es.CarregaQuantum();
+        else
+            this.quantum = forca_quantum;
     }
 
     ////////////////////////////////////////////////////////////////////
     // Logger
 
+    private String metricaA = "";
+    private String metricaB = "";
+    private String metricaC = "";
+
+    void EscreveMetricaA(String s)
+    {
+        metricaA += s + "\n";
+    }
+
+    void EscreveMetricaB(String s)
+    {
+        metricaB += s + "\n";
+    }
+
+    void EscreveMetricaC(String s)
+    {
+        metricaC += s + "\n";
+    }
+
+    void GraveMetrica()
+    {
+        es.EscreveLogDisco(metricaA, "metricaA", true);
+        es.EscreveLogDisco(metricaB, "metricaB", true);
+    }
+
     void GravaLog(){
+        EscreveMetricaA( (((float)this.n_trocas/(float)this.n_processos)+"").replace(".", ","));
+        EscreveMetricaB( (((float)this.n_instruc/(float)this.n_trocas)+"").replace(".", ","));
+        GraveMetrica();
         LogDados();
-        es.EscreveLogDisco(log, quantum);
+        String str_quantum = "" + quantum;
+        if(str_quantum.length() == 1)
+            str_quantum = "0" + str_quantum;
+        es.EscreveLogDisco(log, "log" + str_quantum);
     }
             
     //grava texto na variavel String log
@@ -265,9 +352,10 @@ public class Sistema
     
     //grava log de dados do numero de instruções e trocas
     //deve ser executado após todos processos terminarem
-    private void LogDados(){
-        EscreveLog("MEDIA DE TROCAS: " + ((float)this.n_trocas/(float)this.n_processos) +"\n"
-                 + "MEDIA INSTRUCOES: " + ((float)this.n_instruc/(float)this.quantum) + "\n"
+    private void LogDados()
+    {
+        EscreveLog("MEDIA DE TROCAS: " + (float)((float)this.n_trocas/(float)this.n_processos) +"\n"
+                 + "MEDIA INSTRUCOES: " + (float)((float)this.n_instruc/(float)this.n_trocas) + "\n"
                  + "QUANTUM: " + this.quantum);
     }
     
