@@ -4,10 +4,11 @@ public class BCP
     static final char BLOQUEADO  = 'B';
     static final char PRONTO     = 'P';
     
-    int RX = 0;
-    int RY = 0;
-    int PC = 0;
-    
+    int RX        = 0;
+    int RY        = 0;
+    int PC        = 0;
+    int PTR_TEXTO = 0;
+
     char    estado         = PRONTO;
     int     prioridade     = 0;
     int     creditos       = 0;

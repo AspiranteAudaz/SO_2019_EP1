@@ -22,12 +22,19 @@ public class Escalonador
     //Lista de listas de processos prontos, por creditos
     private Vector<Vector<BCP>> listasProntos;
 
-    private int quantas_passados = 0;
+    //Uma metrica
+    private int numero_escalonamentos = 0;
 
     //Numero de processos não terminados
     int num_processos_ativos = 0;
 
+    //De qual fila se retiram processos, atualmente
     int fila_atual = 0;
+
+    //Processo para rodar por round robin
+    int pos_rrobin;
+
+    boolean rrobin = false;
 
     Escalonador(Sistema sys) throws Exception
     {
@@ -75,7 +82,7 @@ public class Escalonador
 
             //DEBUG
             Sleep();
-            System.out.println("| N: " + processo_escalonado.nomeProcesso + " | C: " + processo_escalonado.creditos_atual + " | E: " + evento  + " | PC: " + processo_escalonado.PC + " | F: " + processo_escalonado.fresco + " | Q: " + quantas_passados);
+            System.out.println("| N: " + processo_escalonado.nomeProcesso + " | C: " + processo_escalonado.creditos_atual + " | E: " + evento  + " | PC: " + processo_escalonado.PC + " | F: " + processo_escalonado.fresco + " | NE: " + numero_escalonamentos);
 
             switch (evento) 
             {
@@ -107,19 +114,36 @@ public class Escalonador
                     break;
             }
 
-            quantas_passados++;
+            numero_escalonamentos++;
         }
     }
 
+    private BCP EscalonaRoundRobin()
+    {
+     
+        Vector<BCP> fila = listasProntos.get(fila_atual);
+        BCP p = fila.get(pos_rrobin % fila.size());
+        pos_rrobin++;
+        return p;
+    }
 
     private BCP EscalonaProcesso()
     {
         if(fila_atual == 0)
         {
-            RedistribuiProcessosFilas(listasProntos);
-            System.out.println("Processos redistribuidos!");
-
-            return EscalonaProcesso();
+            if(listaBloqueados.size() == 0)
+            {
+                RedistribuiProcessosFilas(listasProntos);
+                System.out.println("Processos redistribuidos!");
+                pos_rrobin = 0;
+                rrobin     = false;
+                return EscalonaProcesso();
+            }
+            else
+            {
+                rrobin = true;
+                return EscalonaRoundRobin();
+            }
         }
 
         if(listasProntos.get(fila_atual).size() == 0)
@@ -149,7 +173,7 @@ public class Escalonador
             if(p.tempo_espera == 0)
             {
                 //DEBUG
-                System.out.println("| N: " + p.nomeProcesso + " | C: " + p.creditos_atual + " | PC: " + p.PC + " | F: " + p.fresco + " | Q: " + quantas_passados + " | DESBLOQUEADO!");
+                System.out.println("| N: " + p.nomeProcesso + " | C: " + p.creditos_atual + " | PC: " + p.PC + " | F: " + p.fresco + " | Q: " + numero_escalonamentos + " | DESBLOQUEADO!");
                 DesloqueiaProcesso(p);
                 k--;
             }
@@ -240,7 +264,8 @@ public class Escalonador
     {
         p.creditos_atual = fila;
         listasProntos.get(fila).add(p);
-        OrdenaListaProcessos(listasProntos.get(fila));
+        if(!rrobin)
+            OrdenaListaProcessos(listasProntos.get(fila));
 
         return p;
     }

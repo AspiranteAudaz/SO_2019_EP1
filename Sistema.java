@@ -192,9 +192,10 @@ public class Sistema
         String memoria[];
         for(int i = 0; i < processos.size(); i++)
         {
-            p       = processos.get(i);  
-            memoria = p.memoria;
-            p.PC = ptr;
+            p           = processos.get(i);  
+            memoria     = p.memoria;
+            p.PC        = ptr;
+            p.PTR_TEXTO = PC;
             
             for(int k = 0; k < memoria.length; k++)
             {

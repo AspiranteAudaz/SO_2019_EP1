@@ -46,6 +46,8 @@ E/S iniciada em TESTE-9
 Interrompendo TESTE-9 após 2 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 3 instruções
 Executando TESTE-3
 Interrompendo TESTE-3 após 1 instruções
 Executando TESTE-5
@@ -82,7 +84,15 @@ Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
 Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
+E/S iniciada em TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-6
+E/S iniciada em TESTE-6
+Interrompendo TESTE-6 após 2 instruções
+Executando TESTE-10
+Interrompendo TESTE-10 após 3 instruções
+Executando TESTE-9
+Interrompendo TESTE-9 após 4 instruções
 Executando TESTE-3
 Interrompendo TESTE-3 após 1 instruções
 Executando TESTE-5
@@ -115,9 +125,12 @@ Interrompendo TESTE-4 após 3 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
-Interrompendo TESTE-9 após 3 instruções
+E/S iniciada em TESTE-9
+Interrompendo TESTE-9 após 2 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 3 instruções
 Executando TESTE-3
 Interrompendo TESTE-3 após 1 instruções
 Executando TESTE-5
@@ -144,7 +157,6 @@ Interrompendo TESTE-7 após 2 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
-E/S iniciada em TESTE-6
 Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-2
 Interrompendo TESTE-2 após 2 instruções
@@ -153,10 +165,14 @@ Interrompendo TESTE-4 após 2 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
-E/S iniciada em TESTE-9
-Interrompendo TESTE-9 após 2 instruções
+Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
+E/S iniciada em TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 2 instruções
+Executando TESTE-6
+Interrompendo TESTE-6 após 3 instruções
 Executando TESTE-3
 Interrompendo TESTE-3 após 1 instruções
 Executando TESTE-5
@@ -193,7 +209,6 @@ Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
 Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
-E/S iniciada em TESTE-1
 Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-3
 Interrompendo TESTE-3 após 1 instruções
@@ -219,6 +234,7 @@ Interrompendo TESTE-7 após 3 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
+E/S iniciada em TESTE-6
 Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-2
 Interrompendo TESTE-2 após 3 instruções
@@ -228,9 +244,12 @@ Interrompendo TESTE-4 após 3 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
+E/S iniciada em TESTE-9
 Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 3 instruções
 Executando TESTE-3
 TESTE-3 terminado. X=91. Y=10
 Executando TESTE-5
@@ -263,7 +282,6 @@ Interrompendo TESTE-4 após 2 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-9
-E/S iniciada em TESTE-9
 Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
@@ -279,12 +297,13 @@ Interrompendo TESTE-4 após 1 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 1 instruções
 Executando TESTE-9
-Interrompendo TESTE-9 após 1 instruções
+TESTE-9 terminado. X=3. Y=4
 Executando TESTE-5
 Interrompendo TESTE-5 após 2 instruções
 Executando TESTE-7
 Interrompendo TESTE-7 após 3 instruções
 Executando TESTE-10
+E/S iniciada em TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
@@ -295,8 +314,6 @@ E/S iniciada em TESTE-4
 Interrompendo TESTE-4 após 1 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
-Executando TESTE-9
-Interrompendo TESTE-9 após 3 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-5
@@ -310,8 +327,6 @@ Executando TESTE-4
 Interrompendo TESTE-4 após 1 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 1 instruções
-Executando TESTE-9
-TESTE-9 terminado. X=3. Y=4
 Executando TESTE-5
 Interrompendo TESTE-5 após 2 instruções
 Executando TESTE-10
@@ -350,7 +365,6 @@ Interrompendo TESTE-4 após 2 instruções
 Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 Executando TESTE-1
-E/S iniciada em TESTE-1
 Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-5
 Interrompendo TESTE-5 após 1 instruções
@@ -364,15 +378,18 @@ Executando TESTE-5
 E/S iniciada em TESTE-5
 Interrompendo TESTE-5 após 2 instruções
 Executando TESTE-10
-E/S iniciada em TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
-E/S iniciada em TESTE-6
 Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-4
 TESTE-4 terminado. X=4. Y=5
 Executando TESTE-1
+E/S iniciada em TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 2 instruções
+Executando TESTE-1
+Interrompendo TESTE-1 após 3 instruções
 Executando TESTE-5
 Interrompendo TESTE-5 após 1 instruções
 Executando TESTE-5
@@ -380,138 +397,58 @@ TESTE-5 terminado. X=3. Y=4
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
 E/S iniciada em TESTE-6
 Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-1
 Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-1
+TESTE-1 terminado. X=1. Y=2
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-E/S iniciada em TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
 Executando TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
+Executando TESTE-10
+Interrompendo TESTE-10 após 1 instruções
+Executando TESTE-6
+Interrompendo TESTE-6 após 1 instruções
+Executando TESTE-10
+Interrompendo TESTE-10 após 1 instruções
+Executando TESTE-6
+Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-10
 E/S iniciada em TESTE-10
 Interrompendo TESTE-10 após 1 instruções
 Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
 E/S iniciada em TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-Interrompendo TESTE-10 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-1
-Interrompendo TESTE-1 após 1 instruções
-Executando TESTE-10
-TESTE-10 terminado. X=3. Y=5
-Executando TESTE-6
 Interrompendo TESTE-6 após 1 instruções
 Executando TESTE-1
 TESTE-1 terminado. X=1. Y=2
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-E/S iniciada em TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-Interrompendo TESTE-6 após 1 instruções
-Executando TESTE-6
-TESTE-6 terminado. X=4. Y=6
-MEDIA DE TROCAS: 23.3
-MEDIA INSTRUCOES: 330.0
+Executando TESTE-1
+TESTE-1 terminado. X=1. Y=2
+MEDIA DE TROCAS: 20.2
+MEDIA INSTRUCOES: 318.0
 QUANTUM: 1
