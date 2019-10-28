@@ -22,10 +22,10 @@ public class Escalonador
     //Tabela de bcps
     private Vector<BCP> tabelaBCP;
 
-    private Vector<BCP> listaBloqueados = new Vector<BCP>();
+    private Vector<Integer> listaBloqueados = new Vector<Integer>();
 
     //Lista de listas de processos prontos, por creditos
-    private Vector<Vector<BCP>> listasProntos;
+    private Vector<Vector<Integer>> listasProntos;
 
     //Uma metrica
     private int numero_escalonamentos = 0;
@@ -48,14 +48,16 @@ public class Escalonador
 
         this.sys = sys;
 
+        tabelaBCP = sys.CarregaProgramas();
         //Carrega os programas na memoria, ja preparando os bcps
-        tabelaBCP = OrdenaListaProcessos(sys.CarregaProgramas());
+        //tabelaBCP = OrdenaListaProcessos(sys.CarregaProgramas());
 
         //Gera as listas de creditos (prontos)
         listasProntos = GeraListas(tabelaBCP);
-
+        RedistribuiProcessosFilas(listasProntos);
+        
         //DEBUG
-        Vector<BCP> p;
+        Vector<Integer> p;
         System.out.println("Lista de listas de processos, inicialmente: ");
         int size = listasProntos.size();
         int size_p;
@@ -64,18 +66,20 @@ public class Escalonador
             p = listasProntos.get(i);
             size_p = p.size();
             for(int j = 0; j < size_p; j++)
-                System.out.println("lista: " + i + " prioridade: " + p.get(j).prioridade);
+                System.out.println("lista: " + i + " prioridade: " + GetBCP(p.get(j)).prioridade);
         }
     }
 
     void Escalona()
     {
-        BCP processo_escalonado;
+        BCP d;
+        Integer processo_escalonado;
         char evento;
 
         while(num_processos_ativos > 0)
         {
             processo_escalonado = EscalonaProcesso();
+            d = GetBCP(processo_escalonado);
 
             if(processo_escalonado == null)
             {
@@ -83,18 +87,18 @@ public class Escalonador
                 continue;
             }
 
-            evento = sys.Executa(processo_escalonado);
+            evento = sys.Executa(GetBCP(processo_escalonado));
 
             //DEBUG
             Sleep();
-            System.out.println("| N: " + processo_escalonado.nomeProcesso + " | C: " + processo_escalonado.creditos_atual + " | E: " + evento  + " | PC: " + processo_escalonado.PC + " | F: " + processo_escalonado.fresco + " | NE: " + numero_escalonamentos);
+            System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | E: " + evento  + " | PC: " + d.PC + " | F: " + d.fresco + " | NE: " + numero_escalonamentos);
 
             switch (evento) 
             {
                 case Sistema.PREEMPCAO:
                 
                     RemoveProcesso(processo_escalonado);
-                    if(processo_escalonado.fresco)
+                    if(GetBCP(processo_escalonado).fresco)
                         AdicionaProcesso(AdicionaQuantum(RetiraCredito(processo_escalonado, 2), 2));
                     else
                         AdicionaProcesso(AdicionaQuantum(RetiraCredito(processo_escalonado, 2), 1));
@@ -123,15 +127,20 @@ public class Escalonador
         }
     }
 
-    private BCP EscalonaRoundRobin()
+    private BCP GetBCP(Integer index)
     {
-        Vector<BCP> fila = listasProntos.get(fila_atual);
-        BCP p = fila.get(pos_rrobin % fila.size());
+        return tabelaBCP.get(index.intValue());
+    }
+
+    private Integer EscalonaRoundRobin()
+    {
+        Vector<Integer> fila = listasProntos.get(fila_atual);
+        Integer p = fila.get(pos_rrobin % fila.size());
         pos_rrobin++;
         return p;
     }
 
-    private BCP EscalonaProcesso()
+    private Integer EscalonaProcesso()
     {
         if(fila_atual == 0)
         {
@@ -167,68 +176,69 @@ public class Escalonador
 
         OrdenaListaProcessos(listasProntos.get(fila_atual));
         System.out.println("FA: " + fila_atual + " | NPFA: "+ listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | RETIRA NORMAL ");
+
         //n testei se e o maior
         return listasProntos.get(fila_atual).remove(listasProntos.get(fila_atual).size() - 1);
     }
 
     private void DecrementaTempoBloqueados()
     {
-        BCP p;
-
+        Integer p;
+        BCP d;
         int size = listaBloqueados.size();
         int k = 0;
 
         for(int i = 0; i < size; i++)
         {
             p = listaBloqueados.get(k);
-            p.tempo_espera -= 1;
-            if(p.tempo_espera == 0)
+            GetBCP(p).tempo_espera -= 1;
+            if(GetBCP(p).tempo_espera == 0)
             {
                 //DEBUG
-                System.out.println("| N: " + p.nomeProcesso + " | C: " + p.creditos_atual + " | PC: " + p.PC + " | F: " + p.fresco + " | Q: " + numero_escalonamentos + " | DESBLOQUEADO!");
+                //System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | PC: " + d.PC + " | F: " + d.fresco + " | Q: " + numero_escalonamentos + " | DESBLOQUEADO!");
                 DesloqueiaProcesso(p);
                 k--;
             }
             k++;
         }
     }
-
-    private BCP BloqueiaProcesso(BCP p)
+    
+    private Integer BloqueiaProcesso(Integer p)
     {
         listaBloqueados.add(RemoveProcesso(AdicionaQuantum(RetiraCredito(p, 2), 1)));
-        p.tempo_espera = TEMPO_ESPERA;
+        GetBCP(p).tempo_espera = TEMPO_ESPERA;
         
         return p;
     }
-
-    private BCP DesloqueiaProcesso(BCP p)
+    
+    private Integer DesloqueiaProcesso(Integer p)
     {
         AdicionaProcesso(p);
         listaBloqueados.remove(p);
-        p.estado = BCP.PRONTO;
+        GetBCP(p).estado = BCP.PRONTO;
 
         return p;
     }
 
-    private BCP RetiraCredito(BCP p, int num)
+    private Integer RetiraCredito(Integer p, int num)
     {
-        p.fresco          = false;
-        p.creditos_atual -= num;
+        GetBCP(p).fresco          = false;
+        GetBCP(p).creditos_atual -= num;
 
-        if(p.creditos_atual < 0)
-            p.creditos_atual = 0;
+        if(GetBCP(p).creditos_atual < 0)
+            GetBCP(p).creditos_atual = 0;
 
         return p;
     }
 
-    private BCP AdicionaQuantum(BCP p, int num)
+    private Integer AdicionaQuantum(Integer p, int num)
     {
-        p.quantum_atual += num;
+        GetBCP(p).quantum_atual += num;
 
         return p;
     }
 
-    private void RedistribuiProcessosFilas(Vector<Vector<BCP>> listas_creditos)
+    private void RedistribuiProcessosFilas(Vector<Vector<Integer>> listas_creditos)
     {
         if(fila_atual < 0)
             StackTrace("fila_atual com valor negativo");
@@ -236,14 +246,14 @@ public class Escalonador
         if(listasProntos != null)
         {
             fila_atual = 0;
-            Vector<BCP> fila_zero = listasProntos.get(fila_atual);
+            Vector<Integer> fila_zero = listasProntos.get(fila_atual);
 
             int fila_zero_size = fila_zero.size();
             for(int i = 0; i < fila_zero_size; i++)
             {
                 fila_zero.remove(0);
             }
-            System.out.println("******************************************\n FA: "+ fila_atual + " FLEN: " + listasProntos.get(fila_atual).size());
+            //System.out.println("******************************************\n FA: "+ fila_atual + " FLEN: " + listasProntos.get(fila_atual).size());
         }   
            
         fila_atual = listas_creditos.size() - 1;   
@@ -254,16 +264,17 @@ public class Escalonador
         for(int i = 0; i < tbcp_size; i++)
         {
             p = tabelaBCP.get(i);
-            listas_creditos.get(p.creditos).add(p);
+            listas_creditos.get(p.creditos).add(i);
             p.creditos_atual = p.creditos;
             p.quantum_atual  = 1;
             p.fresco         = true;
         }
     }
-
-    private BCP MataProcesso(BCP p)
+    
+    //MODIFICAR
+    private Integer MataProcesso(Integer p)
     {
-        tabelaBCP.remove(p);
+        //tabelaBCP.remove(GetBCP(p));
         RemoveProcesso(p);
         num_processos_ativos--;
 
@@ -273,21 +284,21 @@ public class Escalonador
         return p;
     }
 
-    private BCP RemoveProcesso(BCP p)
+    private Integer RemoveProcesso(Integer p)
     {
-        listasProntos.get(p.creditos_atual).remove(p);
+        listasProntos.get(GetBCP(p).creditos_atual).remove(p);
 
         return p;
     }
 
-    private BCP AdicionaProcesso(BCP p)
+    private Integer AdicionaProcesso(Integer p)
     {
-        return AdicionaProcesso(p, p.creditos_atual);
+        return AdicionaProcesso(p, GetBCP(p).creditos_atual);
     }
 
-    private BCP AdicionaProcesso(BCP p, int fila)
+    private Integer AdicionaProcesso(Integer p, int fila)
     {
-        p.creditos_atual = fila;
+        GetBCP(p).creditos_atual = fila;
         listasProntos.get(fila).add(p);
         if(!rrobin)
             OrdenaListaProcessos(listasProntos.get(fila));
@@ -296,13 +307,14 @@ public class Escalonador
     }
 
     //Gera as listas de processos prontos, por creditos
-    private Vector<Vector<BCP>> GeraListas(Vector<BCP> tabelaBCP)
+    private Vector<Vector<Integer>> GeraListas(Vector<BCP> tabelaBCP)
     {
         num_processos_ativos = tabelaBCP.size();
 
         int maior_credito = 0;
         BCP p;
         int tbcp_size = tabelaBCP.size();
+
         //Pega maior valor
         for(int i = 0; i < tbcp_size; i++)
         {
@@ -311,58 +323,59 @@ public class Escalonador
                 maior_credito = p.creditos;
         }
 
-        Vector<Vector<BCP>> listas_creditos = new Vector<Vector<BCP>>();
+        Vector<Vector<Integer>> listas_creditos = new Vector<Vector<Integer>>();
 
         //Cria listas
         for(int i = 0; i < maior_credito + 1; i++)
-            listas_creditos.add(new Vector<BCP>());
+            listas_creditos.add(new Vector<Integer>());
 
-        RedistribuiProcessosFilas(listas_creditos);
+        //RedistribuiProcessosFilas(listas_creditos);
 
         return listas_creditos;
     }
 
-    private Vector<BCP> OrdenaListaProcessos(Vector<BCP> tabelaBCP)
+    
+    private Vector<BCP> OrdenaListaProcessos(Vector<Integer> tabela)
     {
         String nomes[] = new String[2];
-        int tbcp_size = tabelaBCP.size();
+        int tbcp_size = tabela.size();
         for(int i = 0; i < tbcp_size; i++)
         {
-            BCP temp;
-            BCP a;
-            BCP b;
+            Integer temp;
+            Integer a;
+            Integer b;
             for(int j = 0; j < tbcp_size - i - 1; j++)
             {
-                a = tabelaBCP.get(j);
-                b = tabelaBCP.get(j+1);
+                a = tabela.get(j);
+                b = tabela.get(j+1);
 
-                if(a.prioridade > b.prioridade)
+                if(GetBCP(a).prioridade > GetBCP(b).prioridade)
                 {
                     temp = a;
-                    tabelaBCP.setElementAt(b, j);
-                    tabelaBCP.setElementAt(temp, j+1);
+                    tabela.setElementAt(b, j);
+                    tabela.setElementAt(temp, j+1);
                 }
-                else if(a.prioridade == b.prioridade)
+                else if(GetBCP(a).prioridade == GetBCP(b).prioridade)
                 {
                     //Regra adversidades
-                    if(tabelaBCP.get(j).estado == BCP.BLOQUEADO)
+                    if(GetBCP(tabela.get(j)).estado == BCP.BLOQUEADO)
                     {
                         temp = a;
-                        tabelaBCP.setElementAt(b, j);
-                        tabelaBCP.setElementAt(temp, j+1);
+                        tabela.setElementAt(b, j);
+                        tabela.setElementAt(temp, j+1);
                         continue;
                     }
 
                     //Se empatar 
-                    nomes[0] = a.nomeProcesso;
-                    nomes[1] = b.nomeProcesso;
+                    nomes[0] = GetBCP(a).nomeProcesso;
+                    nomes[1] = GetBCP(b).nomeProcesso;
                     Arrays.sort(nomes);
 
-                    if(a.nomeProcesso.equals(nomes[0]))
+                    if(GetBCP(a).nomeProcesso.equals(nomes[0]))
                     {
                         temp = a;
-                        tabelaBCP.setElementAt(b, j);
-                        tabelaBCP.setElementAt(temp, j+1);
+                        tabela.setElementAt(b, j);
+                        tabela.setElementAt(temp, j+1);
                     }
                 }
             }
