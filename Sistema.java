@@ -37,6 +37,8 @@ public class Sistema
     //Numero de processos
     private int n_processos = 0;
 
+    private int n_quantum_atingidos = 0;
+
     //Log de saida
     private String log    = "";
     private int n_instruc = 0;
@@ -92,6 +94,7 @@ public class Sistema
 
     char Executa(BCP processo)
     {
+        int num_quantum = 0;
         CarregaRegistradores(processo);
         processo.estado = BCP.EXECUTANDO;
 
@@ -118,12 +121,14 @@ public class Sistema
                     //System.out.print("EXEC: SAIDA");
                     LogaInterrompido(processo.nomeProcesso, num);
                     AsmSAIDA(processo);
+                    adicionaQuantum(num);
                     return SAIDA;
                 
                 case ASMES:
                     //System.out.print("EXEC: ES");
                     AsmES(processo);
                     LogaInterrompido(processo.nomeProcesso, num);
+                    adicionaQuantum(num);
                     return BLOQUEADO;
 
                 case ASMCOM:
@@ -152,6 +157,7 @@ public class Sistema
             }
         }
 
+        adicionaQuantum(num);
         GuardaRegistradores(processo, BCP.PRONTO);
         LogaInterrompido(processo.nomeProcesso, num);
         return PREEMPCAO;
@@ -305,7 +311,7 @@ public class Sistema
 
     void GravaLog(){
         EscreveMetricaA((((float)this.n_trocas/(float)this.n_processos)+"").replace(".", ","));
-        EscreveMetricaB((((float)this.n_instruc/(float)this.n_trocas)+"").replace(".", ","));
+        EscreveMetricaB((((float)this.n_instruc/(float)this.n_quantum_atingidos)+"").replace(".", ","));
         EscreveMetricaC(quantum + "");
         GraveMetrica();
         LogDados();
@@ -356,12 +362,18 @@ public class Sistema
     private void LogDados()
     {
         EscreveLog("MEDIA DE TROCAS: " + (float)((float)this.n_trocas/(float)this.n_processos) +"\n"
-                 + "MEDIA INSTRUCOES: " + (float)((float)this.n_instruc/(float)this.n_trocas) + "\n"
+                 + "MEDIA INSTRUCOES: " + (float)((float)this.n_instruc/(float)this.n_quantum_atingidos) + "\n"
                  + "QUANTUM: " + this.quantum);
     }
     
     /////////////////////////////////////////////////////////////////////
     //Outros
+
+    private void adicionaQuantum(int num_instr)
+    {
+        this.n_quantum_atingidos += ((num_instr-1)/(quantum)) + 1;
+    }
+
     //deve ser chamado toda vez que carregar um processo
     private void incrementaProcessos(){
         this.n_processos++;

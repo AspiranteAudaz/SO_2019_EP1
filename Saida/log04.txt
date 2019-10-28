@@ -177,5 +177,5 @@ Executando TESTE-9
 Interrompendo TESTE-9 após 1 instruções
 TESTE-9 terminado. X=3. Y=4
 MEDIA DE TROCAS: 6.5
-MEDIA INSTRUCOES: 4.0
+MEDIA INSTRUCOES: 3.1707318
 QUANTUM: 4

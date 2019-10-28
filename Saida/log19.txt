@@ -126,5 +126,5 @@ Executando TESTE-8
 Interrompendo TESTE-8 após 3 instruções
 TESTE-8 terminado. X=12. Y=3
 MEDIA DE TROCAS: 4.0
-MEDIA INSTRUCOES: 7.25
+MEDIA INSTRUCOES: 7.0731707
 QUANTUM: 19
