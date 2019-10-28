@@ -27,19 +27,21 @@ public class Escalonador
     //Lista de listas de processos prontos, por creditos
     private Vector<Vector<Integer>> listasProntos;
 
+    //private Vector<Integer> esperaRemocao = new Vector<Integer>();
+
     //Uma metrica
     private int numero_escalonamentos = 0;
 
     //Numero de processos não terminados
-    int num_processos_ativos = 0;
+    private int num_processos_ativos = 0;
 
     //De qual fila se retiram processos, atualmente
-    int fila_atual = 0;
+    private int fila_atual = 0;
 
     //Processo para rodar por round robin
-    int pos_rrobin;
+    private int pos_rrobin;
 
-    boolean rrobin = false;
+    private boolean rrobin = false;
 
     Escalonador(Sistema sys) throws Exception
     {
@@ -55,7 +57,7 @@ public class Escalonador
         //Gera as listas de creditos (prontos)
         listasProntos = GeraListas(tabelaBCP);
         RedistribuiProcessosFilas(listasProntos);
-        
+
         //DEBUG
         Vector<Integer> p;
         System.out.println("Lista de listas de processos, inicialmente: ");
@@ -79,7 +81,6 @@ public class Escalonador
         while(num_processos_ativos > 0)
         {
             processo_escalonado = EscalonaProcesso();
-            d = GetBCP(processo_escalonado);
 
             if(processo_escalonado == null)
             {
@@ -87,11 +88,13 @@ public class Escalonador
                 continue;
             }
 
+            d = GetBCP(processo_escalonado);
+
             evento = sys.Executa(GetBCP(processo_escalonado));
 
             //DEBUG
             Sleep();
-            System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | E: " + evento  + " | PC: " + d.PC + " | F: " + d.fresco + " | NE: " + numero_escalonamentos);
+            System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | E: " + evento  + " | PC: " + d.PC + " | F: " + d.fresco + " | NE: " + numero_escalonamentos + " |");
 
             switch (evento) 
             {
@@ -125,6 +128,10 @@ public class Escalonador
 
             numero_escalonamentos++;
         }
+
+        int size = tabelaBCP.size();
+        for(int i = 0; i < size; i++)
+            tabelaBCP.remove(0);
     }
 
     private BCP GetBCP(Integer index)
@@ -146,7 +153,7 @@ public class Escalonador
         {
             if(listaBloqueados.size() == 0)
             {
-                System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | REDISTRIBUI! ");
+                System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | REDISTRIBUI |");
                 RedistribuiProcessosFilas(listasProntos);
                 System.out.println("Processos redistribuidos!");
                 pos_rrobin = 0;
@@ -159,23 +166,22 @@ public class Escalonador
                     return null;
 
                 //DEBUG
-                System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | ROUND ROBIN!");
+                //System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | ROUND ROBIN |");
                 rrobin = true;
 
                 return EscalonaRoundRobin();
             }
         }
-
         
         if(listasProntos.get(fila_atual).size() == 0)
         {
             fila_atual--;
-            System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | FILA VAZIA NORMAL!");
+            System.out.println("FA: " + fila_atual + " | NPFA: " + listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | FILA VAZIA NORMAL |");
             return EscalonaProcesso();
         }
 
         OrdenaListaProcessos(listasProntos.get(fila_atual));
-        System.out.println("FA: " + fila_atual + " | NPFA: "+ listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | RETIRA NORMAL ");
+        //System.out.println("FA: " + fila_atual + " | NPFA: "+ listasProntos.get(fila_atual).size() + " | NPFB: " + listaBloqueados.size() + " | RETIRA NORMAL | ");
 
         //n testei se e o maior
         return listasProntos.get(fila_atual).remove(listasProntos.get(fila_atual).size() - 1);
@@ -191,11 +197,12 @@ public class Escalonador
         for(int i = 0; i < size; i++)
         {
             p = listaBloqueados.get(k);
+            d = GetBCP(p);
             GetBCP(p).tempo_espera -= 1;
             if(GetBCP(p).tempo_espera == 0)
             {
                 //DEBUG
-                //System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | PC: " + d.PC + " | F: " + d.fresco + " | Q: " + numero_escalonamentos + " | DESBLOQUEADO!");
+                System.out.println("| N: " + d.nomeProcesso + " | C: " + d.creditos_atual + " | PC: " + d.PC + " | F: " + d.fresco + " | Q: " + numero_escalonamentos + " | DESBLOQUEADO |");
                 DesloqueiaProcesso(p);
                 k--;
             }
@@ -237,6 +244,20 @@ public class Escalonador
 
         return p;
     }
+    
+    /*
+    private void RefazIndices()
+    {
+        int size = esperaRemocao.size();
+        Vector<BCP> paraRemover = new Vector<BCP>();
+
+        for(int i = 0; i < size; i++)
+            paraRemover.add(GetBCP(esperaRemocao.remove(0)));
+        
+        for(int i = 0; i < size; i++)
+            tabelaBCP.remove(paraRemover.remove(0));
+    }
+    */
 
     private void RedistribuiProcessosFilas(Vector<Vector<Integer>> listas_creditos)
     {
@@ -253,13 +274,16 @@ public class Escalonador
             {
                 fila_zero.remove(0);
             }
-            //System.out.println("******************************************\n FA: "+ fila_atual + " FLEN: " + listasProntos.get(fila_atual).size());
+            // /System.out.println("| FA: "+ fila_atual + " | FLEN: " + listasProntos.get(fila_atual).size() + " |");
         }   
-           
+        
+        //RefazIndices();
+        
         fila_atual = listas_creditos.size() - 1;   
 
         BCP p;
         int tbcp_size = tabelaBCP.size();
+
         //Adiciona uma referencia para o processo na tabela BCP na sua respectiva fila
         for(int i = 0; i < tbcp_size; i++)
         {
@@ -274,7 +298,7 @@ public class Escalonador
     //MODIFICAR
     private Integer MataProcesso(Integer p)
     {
-        //tabelaBCP.remove(GetBCP(p));
+        //esperaRemocao.add(p);
         RemoveProcesso(p);
         num_processos_ativos--;
 
